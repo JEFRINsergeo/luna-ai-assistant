@@ -1,5 +1,6 @@
 import psutil
 import os
+from pathlib import Path
 
 
 def get_running_processes():
@@ -17,19 +18,23 @@ def get_running_processes():
 
 def scan_downloads():
 
-    downloads = os.path.expanduser("~/Downloads")
+    try:
+        downloads = str(Path.home() / "Downloads")
 
-    suspicious = []
+        if not os.path.exists(downloads):
+            return []
 
-    dangerous_extensions = [".exe", ".bat", ".ps1", ".vbs"]
+        suspicious = []
 
-    for file in os.listdir(downloads):
+        for file in os.listdir(downloads):
 
-        for ext in dangerous_extensions:
-            if file.endswith(ext):
+            if file.endswith(".exe") or file.endswith(".bat"):
                 suspicious.append(file)
 
-    return suspicious
+        return suspicious
+
+    except Exception:
+        return []
 
 
 def scan_installed_apps():

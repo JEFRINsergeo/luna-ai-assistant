@@ -5,7 +5,7 @@ import google.generativeai as genai
 MODEL = "llama3"
 
 # Load Gemini key
-GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_KEY = os.getenv("AIzaSyCiYhnpE4M8Mix7oQcZHm173eAczOc1Mvw")
 
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
