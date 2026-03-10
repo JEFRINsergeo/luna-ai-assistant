@@ -1,10 +1,10 @@
 # Luna AI Assistant
 
-Luna is an AI assistant with a built-in cybersecurity engine.
+Luna is an Hybrid AI assistant with a built-in cybersecurity engine.
 
 ## Features
 
-- AI chat assistant
+- AI chat assistant(Online+Offline)
 - Process behavior monitoring
 - Network monitoring
 - Ransomware detection
@@ -18,6 +18,7 @@ Luna is an AI assistant with a built-in cybersecurity engine.
 - Ollama
 - psutil
 - threading
+- Gemini
 
 ## Architecture
 
