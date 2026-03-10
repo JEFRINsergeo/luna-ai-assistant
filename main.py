@@ -16,7 +16,12 @@ from security.network_monitor import monitor_connections
 from security.ai_reasoning_security import analyze_behavior
 from security.file_sandbox import scan_file
 from security.quarantine import quarantine_file
+import streamlit as st
+from memory import init_db
 
+init_db()
+
+st.title("Luna AI Assistant")
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
