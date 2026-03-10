@@ -6,7 +6,7 @@ MODEL = "llama3"
 
 # Load Gemini key from environment
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
-print("Gemini key loaded:", bool(GEMINI_KEY))
+
 
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
