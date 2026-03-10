@@ -4,9 +4,7 @@ import google.generativeai as genai
 
 MODEL = "llama3"
 
-# Load Gemini key from environment
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
-
 
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
@@ -14,7 +12,7 @@ if GEMINI_KEY:
 
 def ask_luna(prompt):
 
-    # ---------- TRY OFFLINE OLLAMA ----------
+    # Try Ollama (local only)
     try:
         response = ollama.chat(
             model=MODEL,
@@ -22,16 +20,14 @@ def ask_luna(prompt):
         )
         return response["message"]["content"]
 
-    except Exception:
-        pass
+    except Exception as e:
+        print("Ollama failed:", e)
 
-    # ---------- FALLBACK TO GEMINI ----------
+    # Try Gemini
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
-
         response = model.generate_content(prompt)
-
         return response.text
 
-    except Exception:
-        return "⚠ Luna AI is unavailable right now."
+    except Exception as e:
+        return f"Gemini error: {e}"
