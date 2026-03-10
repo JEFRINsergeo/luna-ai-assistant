@@ -52,7 +52,7 @@ def recall(limit=10):
     cursor = conn.cursor()
 
     cursor.execute(
-        "SELECT role, content FROM conversation_memory ORDER BY id DESC LIMIT ?",
+        "SELECT role, content FROM conversation_memory ORDER BY rowid DESC LIMIT ?",
         (limit,)
     )
 
