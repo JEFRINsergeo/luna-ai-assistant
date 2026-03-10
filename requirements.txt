@@ -3,3 +3,5 @@ ollama
 psutil 
 watchdog 
 pyinstaller
+requests
+duckduckgo-search
