@@ -4,8 +4,8 @@ import google.generativeai as genai
 
 MODEL = "llama3"
 
-# Load Gemini key
-GEMINI_KEY = os.getenv("AIzaSyCiYhnpE4M8Mix7oQcZHm173eAczOc1Mvw")
+# Load Gemini key from environment
+GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
