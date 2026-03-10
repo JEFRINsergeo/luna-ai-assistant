@@ -1,5 +1,5 @@
 import streamlit as st
-import ollama
+from ai_engine import ask_luna
 import psutil
 import os
 
@@ -17,7 +17,6 @@ from security.ai_reasoning_security import analyze_behavior
 from security.file_sandbox import scan_file
 from security.quarantine import quarantine_file
 
-MODEL = "llama3"
 
 # ---------- PAGE CONFIG ----------
 st.set_page_config(
@@ -46,6 +45,7 @@ button{
 """, unsafe_allow_html=True)
 
 st.title("🌙 Luna AI Assistant")
+
 
 # ---------- START SECURITY ENGINE ----------
 if "engine_started" not in st.session_state:
@@ -82,7 +82,7 @@ with st.sidebar:
 
     st.header("🌙 Luna Control")
 
-    # ---------- PROFILE ----------
+    # PROFILE
     st.subheader("🧠 Personal Profile")
 
     profile = get_personal() or {}
@@ -95,7 +95,7 @@ with st.sidebar:
 
     st.divider()
 
-    # ---------- SYSTEM MONITOR ----------
+    # SYSTEM MONITOR
     st.subheader("💻 System Monitor")
 
     cpu = psutil.cpu_percent()
@@ -111,7 +111,7 @@ with st.sidebar:
 
     st.divider()
 
-    # ---------- SECURITY LOGS ----------
+    # SECURITY LOGS
     st.subheader("📜 Security Logs")
 
     logs = read_logs(limit=20) or []
@@ -147,7 +147,7 @@ with st.sidebar:
 
     st.divider()
 
-    # ---------- MEMORY CONTROL ----------
+    # MEMORY CONTROL
     st.subheader("🧠 Memory")
 
     if st.button("🧹 Clear Chat Memory"):
@@ -159,7 +159,7 @@ with st.sidebar:
 
     st.divider()
 
-    # ---------- SECURITY TOOLS ----------
+    # SECURITY TOOLS
     st.subheader("🛡 Security Tools")
 
     if st.button("🔎 Run Full Security Scan"):
@@ -187,7 +187,7 @@ with st.sidebar:
             st.write(scan.get("installed_apps", []))
 
 
-# ---------- SECURITY MONITOR ----------
+# ---------- REAL TIME SECURITY ----------
 st.subheader("🛡 Real-Time Security Monitor")
 
 download_alerts = get_download_alerts() or []
@@ -197,7 +197,7 @@ network_alerts = monitor_connections() or []
 if not download_alerts and not process_alerts and not network_alerts:
     st.success("System secure — no threats detected")
 
-# DOWNLOAD ALERTS
+
 for alert in download_alerts:
 
     st.error(f"⚠ Suspicious Download: {alert}")
@@ -211,11 +211,11 @@ for alert in download_alerts:
             msg = quarantine_file(alert)
             st.warning(msg)
 
-# PROCESS ALERTS
+
 for alert in process_alerts:
     st.warning(f"⚠ Suspicious Process: {alert}")
 
-# NETWORK ALERTS
+
 for alert in network_alerts:
     st.error(f"🌐 Network Threat: {alert}")
 
@@ -242,20 +242,23 @@ if user_input:
     ai_reply = None
     prompt = None
 
-    # ---------- MALWARE PATTERN CHECK ----------
+
+    # MALWARE PATTERN CHECK
     threats = detect_malware_patterns(user_input)
 
     if threats:
 
         ai_reply = f"⚠ Suspicious command patterns detected:\n{threats}"
 
-    # ---------- PERSONAL MEMORY ----------
+
+    # PERSONAL MEMORY
     elif "my name is" in text:
 
         name = user_input.split("is")[-1].strip()
         save_personal("name",name)
 
         ai_reply = f"Nice to meet you {name}. I'll remember your name."
+
 
     elif "i study" in text:
 
@@ -264,6 +267,7 @@ if user_input:
 
         ai_reply = "Got it. I'll remember what you study."
 
+
     elif "my interest is" in text:
 
         interest = user_input.split("is")[-1].strip()
@@ -271,7 +275,8 @@ if user_input:
 
         ai_reply = "Saved your interest."
 
-    # ---------- INTERNET SEARCH ----------
+
+    # INTERNET SEARCH
     elif text.startswith("search:"):
 
         query = user_input.replace("search:","").strip()
@@ -290,7 +295,8 @@ Question:
 Give a helpful answer.
 """
 
-    # ---------- SECURITY SCAN ----------
+
+    # SECURITY SCAN
     elif "security scan" in text:
 
         scan = run_full_scan()
@@ -308,7 +314,8 @@ Installed Apps:
 {scan.get("installed_apps",[])}
 """
 
-    # ---------- NORMAL CHAT ----------
+
+    # NORMAL CHAT
     else:
 
         memory = recall(limit=5)
@@ -329,35 +336,23 @@ User message:
 Give a helpful answer.
 """
 
+
     # ---------- AI RESPONSE ----------
     if ai_reply is None and prompt:
 
         with st.chat_message("assistant"):
 
-            placeholder = st.empty()
-            full=""
+            with st.spinner("Luna thinking..."):
 
-            response = ollama.chat(
-                model=MODEL,
-                messages=[{"role":"user","content":prompt}],
-                stream=True
-            )
+                ai_reply = ask_luna(prompt)
 
-            for chunk in response:
-
-                content = chunk["message"]["content"]
-                full += content
-
-                placeholder.markdown(full+"▌")
-
-            placeholder.markdown(full)
-
-        ai_reply = full
+                st.write(ai_reply)
 
     else:
 
         with st.chat_message("assistant"):
             st.write(ai_reply)
+
 
     if ai_reply:
 
@@ -370,4 +365,4 @@ Give a helpful answer.
 
 # ---------- FOOTER ----------
 st.markdown("---")
-st.caption("🌙 Luna • Local AI Assistant powered by Ollama")
+st.caption("🌙 Luna • Hybrid AI Assistant (Offline + Online)")
