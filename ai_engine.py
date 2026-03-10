@@ -25,7 +25,7 @@ def ask_luna(prompt):
 
     # Try Gemini
     try:
-        model = genai.GenerativeModel("models/gemini-1.5-flash")
+        model = genai.GenerativeModel("models/gemini-flash-latest")
         response = model.generate_content(prompt)
         return response.text
 
