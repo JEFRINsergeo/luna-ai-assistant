@@ -34,5 +34,5 @@ https://luna262.streamlit.app
 
 ## Author
 
-JEFRIN SERGEO
-Computer Science Engineering
+JEFRIN SERGEO J G
+(BE-CSE)
